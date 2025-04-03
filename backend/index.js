@@ -8,8 +8,10 @@ import cookieParser from "cookie-parser";
 import db from "./config/db.config.js";
 import createBabySittersTable from "./models/BabySitter.model.js";
 import createManagerTable from "./models/Manager.model.js";
+import createChildTable from "./models/Child.model.js";
 import AuthRouter from "./routes/auth.route.js";
 import OperationsRouter from "./routes/managerOperations.routes.js";
+
 
 dotenv.config();
 
@@ -33,6 +35,7 @@ app.listen(PORT, () => {
 
     createBabySittersTable();
     createManagerTable();
+    createChildTable();
 });
 
 
