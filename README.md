@@ -60,7 +60,7 @@ This project is part of the **CSC2210 Web Programming** exam (Easter 2025 Semest
 ```mermaid
 graph TD
   A[React Frontend] -->|HTTP Requests| B[Express API]
-  B -->|CRUD Operations| C[(PostgreSQL DB)]
+  B -->|CRUD Operations| C[(MySQL)]
   C --> B
   B --> A
   A --> D[Chart.js]
