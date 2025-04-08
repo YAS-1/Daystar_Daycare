@@ -104,6 +104,30 @@ export const updateIncident = async (req, res) => {
 };
 
 
+//Get all incidents by babysitter id
+export const getIncidentsByBabySitterId = async (req, res) => {
+    try {
+        const { babysitter_id } = req.params;
+
+        const query = "SELECT * FROM incidents WHERE babysitter_id = ?";
+        const [results] = await db.query(query, [babysitter_id]);
+        
+        res.status(200).json({
+            message: "Incidents fetched successfully",
+            success: true,
+            incidents: results
+        });
+    } catch (error) {
+        console.log("Error fetching incidents by babysitter id:", error);
+        res.status(500).json({message: error.message});
+    }
+};
+
+
+//Sending email to the child's guardian when an incident is reported
+
+
+
 
 
 
