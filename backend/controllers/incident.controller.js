@@ -189,7 +189,7 @@ export const sendIncidentEmail = async (req, res) => {
         const child = childRows[0];
 
         //Fetching the babysitter's details
-        const babysitterQuery = "SELECT full_name, email FROM baby_sitters WHERE id = ?";
+        const babysitterQuery = "SELECT fullname, email FROM baby_sitters WHERE id = ?";
         const [babysitterRows] = await db.query(babysitterQuery, [incident.babysitter_id]);
 
         if (babysitterRows.length === 0 ){
