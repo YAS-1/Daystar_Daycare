@@ -3,5 +3,15 @@
 .env
 node_modules
 
-# Temporaries
-mailer.js
+# ------ Temporaries ------
+#This is in utils in the backend folder
+mailer.js 
+
+#---Note: Dont forget to add the necesarry routes in the index.js file
+
+#This is in the controllers folder
+Expenses.controller.js
+
+#This is in the routes folder
+managerExpenses.route.js
+
