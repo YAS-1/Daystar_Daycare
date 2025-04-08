@@ -51,5 +51,7 @@ ALTER TABLE child MODIFY COLUMN Duration_of_stay VARCHAR(255) NULL;
 
 ALTER TABLE child MODIFY COLUMN gender VARCHAR(255) NULL;
 
+ALTER TABLE incidents MODIFY COLUMN incident_date DATE;
+
 
 
