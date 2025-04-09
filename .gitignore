@@ -1,7 +1,11 @@
+.qodo
 
+#---frontend---
+#Dashboard - Pages
+BabySitterDashboard.jsx
+ManagerDashboard.jsx
 
-.vscode
-node_modules
-dist
-.env
+#Login - Pages
+ManagerLogin.jsx
+
 

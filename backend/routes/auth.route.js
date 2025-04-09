@@ -1,7 +1,7 @@
-import epress from 'express';
+import express from 'express';
 import { babySitterLogin, managerLogin, logout } from '../controllers/auth.controller.js';
 
-const AuthRouter = epress.Router();
+const AuthRouter = express.Router();
 
 AuthRouter.post('/babySitter/login',babySitterLogin);
 AuthRouter.post('/manager/login',managerLogin);
