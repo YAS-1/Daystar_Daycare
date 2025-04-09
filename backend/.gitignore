@@ -5,7 +5,7 @@ node_modules
 
 # ------ Temporaries ------
 #This is in utils in the backend folder
-mailer.js 
+mailer.js
 
 #---Note: Dont forget to add the necessary routes in the index.js file
 
