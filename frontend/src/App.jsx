@@ -20,11 +20,11 @@ function App() {
     }, []);
 
     useEffect(() => {
-        // Only redirect if on a dashboard route and not logged in
+        
         if (!isLoggedIn && (location.pathname === "/manager/dashboard" || location.pathname === "/babysitter/dashboard")) {
             if (userRole === "manager") navigate("/manager/login");
             else if (userRole === "babysitter") navigate("/babysitter/login");
-            else navigate("/manager/login");
+            else navigate("/babysitter/login");
         }
     }, [isLoggedIn, userRole, navigate, location.pathname]);
 

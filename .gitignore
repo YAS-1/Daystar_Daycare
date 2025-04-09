@@ -1,11 +1,11 @@
 .qodo
 
 #---frontend---
-#Dashboard
+#Dashboard - Pages
 BabySitterDashboard.jsx
 ManagerDashboard.jsx
 
-#Login
+#Login - Pages
 ManagerLogin.jsx
 
 
