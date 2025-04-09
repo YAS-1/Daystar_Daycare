@@ -2,15 +2,10 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
-import {
-	FaEnvelope,
-	FaLock,
-	FaBaby,
-	FaSignInAlt,
-	FaSpinner,
-} from "react-icons/fa";
+import { FaEnvelope, FaLock, FaBaby, FaSignInAlt, FaSpinner } from "react-icons/fa";
 import backgroundImage from "../assets/babySitter1.jpg";
 
+//The BabySitterLogin component is used to login a babysitter.
 const BabySitterLogin = ({ setIsLoggedIn, setUserRole }) => {
 	const navigate = useNavigate();
 	const [formData, setFormData] = useState({ email: "", password: "" });
@@ -31,7 +26,7 @@ const BabySitterLogin = ({ setIsLoggedIn, setUserRole }) => {
 		setLoading(true);
 		try {
 			const response = await axios.post(
-				"http://localhost:3337/api/auth/babysitter/login",
+				"http://localhost:3337/api/auth/babysitter/login", // The babysitter login API
 				formData,
 				{ withCredentials: true }
 			);
@@ -89,6 +84,7 @@ const BabySitterLogin = ({ setIsLoggedIn, setUserRole }) => {
 				{/* Form */}
 				<form onSubmit={handleSubmit} className='space-y-6'>
 					<div className='space-y-4'>
+
 						{/* Email */}
 						<div>
 							<label
