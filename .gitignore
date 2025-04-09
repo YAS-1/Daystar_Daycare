@@ -1,0 +1,11 @@
+.qodo
+
+#---frontend---
+#Dashboard
+BabySitterDashboard.jsx
+ManagerDashboard.jsx
+
+#Login
+ManagerLogin.jsx
+
+
