@@ -24,7 +24,7 @@ function App() {
         if (!isLoggedIn && (location.pathname === "/manager/dashboard" || location.pathname === "/babysitter/dashboard")) {
             if (userRole === "manager") navigate("/manager/login");
             else if (userRole === "babysitter") navigate("/babysitter/login");
-            else navigate("/babysitter/login");
+            else navigate("/manager/login");
         }
     }, [isLoggedIn, userRole, navigate, location.pathname]);
 
