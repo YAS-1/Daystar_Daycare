@@ -1,12 +1,11 @@
-
-
-.vscode
-node_modules
-dist
-.env
-
 .qodo
 
-# Temp
-DashBoards
+#---frontend---
+#Dashboard - Pages
+BabySitterDashboard.jsx
+ManagerDashboard.jsx
+
+#Login - Pages
+ManagerLogin.jsx
+
 
