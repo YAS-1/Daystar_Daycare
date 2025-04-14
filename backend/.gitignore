@@ -9,7 +9,7 @@ node_modules
 
 #This is in the controllers folder
 
-
+ParentPayment.controller.js
 
 
 #This is in the routes folder
