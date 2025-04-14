@@ -34,8 +34,6 @@ export const registerAdmin = async (req, res) => {
             [fullname, age, gender, NIN, email, phone, hashedPassword]
         );
         
-        // Generate token and set cookie
-        generateTokenAndSetCookie(result.insertId, res);
         
         // Return success response (only once)
         res.status(201).json({ 
@@ -85,8 +83,6 @@ export const registerBabysitter = async (req, res) => {
             [fullname, age, gender, NIN, email, phone, hashedPassword, next_of_kin_name, next_of_kin_phone, next_of_kin_relationship]
         );
 
-        // Generate token and set cookie
-        generateTokenAndSetCookie(result.insertId, res);
 
         // Return success response (only once)
         res.status(201).json({
@@ -270,44 +266,78 @@ export const updateBabysitter = async (req, res) => {
 export const updateChild = async (req, res) => {
     try {
         const { id } = req.params;
-        const { full_name, age, gender, parent_guardian_name, parent_guardian_phone, parent_guardian_email, parent_guardian_relationship, special_needs, Duration_of_stay } = req.body;
+        const {
+            full_name,
+            age,
+            gender,
+            parent_guardian_name,
+            parent_guardian_phone,
+            parent_guardian_email,
+            parent_guardian_relationship,
+            special_needs,
+            Duration_of_stay,
+        } = req.body;
 
         // Check if the child exists
         const [existingChild] = await db.query("SELECT * FROM child WHERE id = ?", [id]);
-        
         if (existingChild.length === 0) {
             return res.status(404).json({ message: "Child not found" });
         }
 
         // Check if the email is already in use by another child
-        if (parent_guardian_email) {
-            const [existingEmail] = await db.query("SELECT * FROM child WHERE parent_guardian_email = ? AND id != ?", [parent_guardian_email, id]);
+        if (parent_guardian_email !== undefined) {
+            const [existingEmail] = await db.query(
+                "SELECT * FROM child WHERE parent_guardian_email = ? AND id != ?",
+                [parent_guardian_email, id]
+            );
             if (existingEmail.length > 0) {
                 return res.status(400).json({ message: "Email already in use" });
             }
         }
 
         // Fetch current child data
-        const selectQuery = `SELECT * FROM child WHERE id = ?`;
-        const [rows] = await db.query(selectQuery, [id]);
-
+        const [rows] = await db.query("SELECT * FROM child WHERE id = ?", [id]);
         const currentChild = rows[0];
 
-        // Use existing values if new ones aren't provided, with proper type handling for integer fields
+        // Use existing values if new ones aren't provided
         const updatedFullname = full_name !== undefined ? full_name : currentChild.full_name;
-        const updatedAge = age !== undefined ? (age === '' || age === null ? null : parseInt(age, 10)) : currentChild.age;
+        const updatedAge = age !== undefined ? parseInt(age, 10) : currentChild.age;
         const updatedGender = gender !== undefined ? gender : currentChild.gender;
-        const updatedParentGuardianName = parent_guardian_name !== undefined ? parent_guardian_name : currentChild.parent_guardian_name;
-        const updatedParentGuardianPhone = parent_guardian_phone !== undefined ? parent_guardian_phone : currentChild.parent_guardian_phone;
-        const updatedParentGuardianEmail = parent_guardian_email !== undefined ? parent_guardian_email : currentChild.parent_guardian_email;
-        const updatedParentGuardianRelationship = parent_guardian_relationship !== undefined ? parent_guardian_relationship : currentChild.parent_guardian_relationship;
-        const updatedSpecialNeeds = special_needs !== undefined ? special_needs : currentChild.special_needs;
-        const updatedDurationOfStay = Duration_of_stay !== undefined ? (Duration_of_stay === '' || Duration_of_stay === null ? null : parseInt(Duration_of_stay, 10)) : currentChild.Duration_of_stay;
+        const updatedParentGuardianName = parent_guardian_name !== undefined
+            ? parent_guardian_name
+            : currentChild.parent_guardian_name;
+        const updatedParentGuardianPhone = parent_guardian_phone !== undefined
+            ? parent_guardian_phone
+            : currentChild.parent_guardian_phone;
+        const updatedParentGuardianEmail = parent_guardian_email !== undefined
+            ? parent_guardian_email
+            : currentChild.parent_guardian_email;
+        const updatedParentGuardianRelationship = parent_guardian_relationship !== undefined
+            ? parent_guardian_relationship
+            : currentChild.parent_guardian_relationship;
+        const updatedSpecialNeeds = special_needs !== undefined
+            ? special_needs === "" ? null : special_needs
+            : currentChild.special_needs;
+        const updatedDurationOfStay = Duration_of_stay !== undefined
+            ? String(Duration_of_stay)
+            : currentChild.Duration_of_stay;
+
+        // Validate required fields
+        if (!updatedFullname || !updatedGender || !updatedParentGuardianName ||
+            !updatedParentGuardianPhone || !updatedParentGuardianEmail ||
+            !updatedParentGuardianRelationship || !updatedDurationOfStay) {
+            return res.status(400).json({ message: "All required fields must be provided" });
+        }
+        if (isNaN(updatedAge)) {
+            return res.status(400).json({ message: "Age must be a valid number" });
+        }
 
         // Build the update query
         const query = `
             UPDATE child
-            SET full_name = ?, age = ?, gender = ?, parent_guardian_name = ?, parent_guardian_phone = ?, parent_guardian_email = ?, parent_guardian_relationship = ?, special_needs = ?, Duration_of_stay = ?
+            SET full_name = ?, age = ?, gender = ?, parent_guardian_name = ?, 
+                parent_guardian_phone = ?, parent_guardian_email = ?, 
+                parent_guardian_relationship = ?, special_needs = ?, Duration_of_stay = ?
             WHERE id = ?
         `;
         const [result] = await db.query(query, [
@@ -320,22 +350,21 @@ export const updateChild = async (req, res) => {
             updatedParentGuardianRelationship,
             updatedSpecialNeeds,
             updatedDurationOfStay,
-            id
+            id,
         ]);
 
         if (result.affectedRows === 0) {
             return res.status(404).json({ message: "Child not found" });
         }
-        
+
         res.status(200).json({
             message: "Child updated successfully",
             success: true,
-            childId: id
+            childId: id,
         });
-        console.log('Child updated successfully');
-
+        console.log("Child updated successfully");
     } catch (error) {
-        console.log("Error updating child", error);
+        console.log("Error updating child:", error);
         res.status(500).json({ message: error.message });
     }
 };
