@@ -62,7 +62,7 @@ export const getIncidentsReportedByMe = async (req, res) => {
 
         const [rows] = await db.query(query, [babysitter_id]);
         if (rows.length === 0) {
-            return res.status(404).json({message: "No incidents reported by you"});
+            return res.status(200).json({message: "You have not reported any incidents"});
         }
 
         res.status(200).json({
@@ -76,6 +76,43 @@ export const getIncidentsReportedByMe = async (req, res) => {
             success: false,
             message: "Error fetching incidents reported by me",
             error: error.message
+        });
+    }
+};
+
+export const logoutBabysitter = async (req, res) => {
+    try {
+        // Remove cookie
+        res.clearCookie('token');
+        res.status(200).json({message: 'Logout successful'});
+        } catch (error) {
+            res.status(500).json({message: error.message});
+            console.log('Error in logout:', error);
+    }
+};
+
+
+export const getMyInfo = async (req, res) => {
+    try {
+        const { babysitter_id } = req.user;
+        const query = "SELECT fullname FROM baby_sitters WHERE id = ?";
+        const [rows] = await db.query(query, [babysitter_id]);
+        if (rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Babysitter not found",
+            });
+        }
+        res.status(200).json({
+            success: true,
+            data: { fullname: rows[0].fullname },
+        });
+    } catch (error) {
+        console.error("Error fetching babysitter info:", error);
+        res.status(500).json({
+            success: false,
+            message: "Error fetching babysitter info",
+            error: error.message,
         });
     }
 };

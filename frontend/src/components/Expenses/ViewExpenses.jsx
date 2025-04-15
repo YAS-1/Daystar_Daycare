@@ -357,3 +357,4 @@ const ViewExpenses = ({ setIsLoggedIn, setUserRole }) => {
 };
 
 export default ViewExpenses;
+

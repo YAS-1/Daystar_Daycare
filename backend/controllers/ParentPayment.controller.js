@@ -120,7 +120,7 @@ export const updateParentPayment = async (req, res) => {
         res.json({ message: "Parent payment updated successfully", paymentId: id });
 
     } catch (err) {
-        res.status(500).json({ error: "Error updating parent payment: " + err.message });
+        res.status(500).json({ error: `Error updating parent payment: ${err.message}` });
     }
 };
 
@@ -207,3 +207,4 @@ export const sendPaymentReminder = async (req, res) => {
         res.status(500).json({message: error.message});
     }
 };
+
