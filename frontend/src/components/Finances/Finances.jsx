@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react"; 
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +17,7 @@ import {
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
+//Handles rendering the finances of the Daycare
 const Finances = ({ setIsLoggedIn, setUserRole }) => {
     const [payments, setPayments] = useState([]);
     const [expenses, setExpenses] = useState([]);
