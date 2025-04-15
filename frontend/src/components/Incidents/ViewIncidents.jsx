@@ -366,3 +366,4 @@ const ViewIncidents = ({ setIsLoggedIn, setUserRole }) => {
 };
 
 export default ViewIncidents;
+
