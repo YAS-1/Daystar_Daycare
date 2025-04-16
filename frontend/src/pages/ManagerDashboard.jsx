@@ -1,5 +1,5 @@
-import React from "react";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import {
@@ -117,6 +117,7 @@ const ManagerDashboard = ({ setIsLoggedIn, setUserRole }) => {
 				</button>
 			</div>
 			<div className='flex-1 p-6'>
+				{/* The Outlet is used to render the child routes within the child route */}
 				<Outlet />
 				{!Outlet && (
 					<p className='text-gray-600'>Select an option from the sidebar.</p>
