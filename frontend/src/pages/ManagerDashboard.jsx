@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { React, useEffect } from "react";
 import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
