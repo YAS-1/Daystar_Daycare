@@ -1,131 +1,204 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import {
-	FaCalendar,
-	FaExclamationTriangle,
-	FaPlus,
-	FaMoneyBillWave,
-	FaSignOutAlt,
-	FaUser,
-} from "react-icons/fa";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { FaSignOutAlt } from "react-icons/fa";
+import MySchedules from "../components/BabysitterView/MySchedules";
+import ReportedIncidents from "../components/BabysitterView/ReportedIncidents";
+import ReportIncident from "../components/BabysitterView/ReportIncident";
+import MyPayments from "../components/BabysitterView/MyPayments";
 
-const BabySitterDashboard = ({ setIsLoggedIn, setUserRole }) => {
-	const [currentUser, setCurrentUser] = useState(null);
+const BabysitterDashboard = ({ setIsLoggedIn, setUserRole }) => {
+	const [babysitterName, setBabysitterName] = useState("Babysitter");
+	const [loadingName, setLoadingName] = useState(true);
+	const [activeSection, setActiveSection] = useState("schedules");
+	const [refreshIncidents, setRefreshIncidents] = useState(false);
 	const navigate = useNavigate();
-	const location = useLocation();
 
 	useEffect(() => {
-		// Fetch current babysitter details
-		const fetchCurrentUser = async () => {
+		const fetchName = async () => {
 			try {
-				const response = await fetch(
-					"http://localhost:3337/api/babysitters/current",
-					{
-						credentials: "include",
-					}
+				setLoadingName(true);
+				const response = await axios.get(
+					"http://localhost:3337/api/babysitter/me",
+					{ withCredentials: true }
 				);
-				if (response.ok) {
-					const data = await response.json();
-					setCurrentUser(data);
-				}
+				setBabysitterName(response.data.data.fullname || "Babysitter");
+				console.log("Babysitter name fetched:", response.data.data);
 			} catch (error) {
-				console.error("Error fetching current user:", error);
+				console.error("Error fetching name:", error);
+				toast.error(error.response?.data?.message || "Failed to load name", {
+					position: "top-right",
+				});
+				if (error.response?.status === 401) {
+					toast.error("Session expired. Please log in again.", {
+						position: "top-right",
+					});
+					setIsLoggedIn(false);
+					setUserRole(null);
+					navigate("/babysitter/login");
+				}
+			} finally {
+				setLoadingName(false);
 			}
 		};
-		fetchCurrentUser();
-	}, []);
+		fetchName();
+	}, [setIsLoggedIn, setUserRole, navigate]);
 
-	const handleLogout = () => {
-		localStorage.clear();
-		setIsLoggedIn(false);
-		setUserRole(null);
-		navigate("/login");
+	const formatDate = (dateString) => {
+		try {
+			const date = new Date(dateString);
+			return date.toLocaleDateString("en-US", {
+				year: "numeric",
+				month: "long",
+				day: "numeric",
+			});
+		} catch (error) {
+			console.error("Error formatting date:", error);
+			return dateString || "N/A";
+		}
 	};
 
-	const isActive = (path) => {
-		return location.pathname === path;
+	const handleLogout = async () => {
+		try {
+			const config = { withCredentials: true };
+			await axios.post("http://localhost:3337/api/auth/logout", {}, config);
+			toast.success("Logged out successfully", { position: "top-right" });
+			setIsLoggedIn(false);
+			setUserRole(null);
+			navigate("/babysitter/login");
+		} catch (error) {
+			console.error("Error logging out:", error);
+			toast.error(error.response?.data?.message || "Failed to log out", {
+				position: "top-right",
+			});
+		}
+	};
+
+	const handleIncidentCreated = () => {
+		setRefreshIncidents((prev) => !prev);
+	};
+
+	const renderSection = () => {
+		switch (activeSection) {
+			case "schedules":
+				return (
+					<MySchedules
+						setIsLoggedIn={setIsLoggedIn}
+						setUserRole={setUserRole}
+						formatDate={formatDate}
+						navigate={navigate}
+					/>
+				);
+			case "incidents":
+				return (
+					<ReportedIncidents
+						setIsLoggedIn={setIsLoggedIn}
+						setUserRole={setUserRole}
+						formatDate={formatDate}
+						navigate={navigate}
+						refreshIncidents={refreshIncidents}
+					/>
+				);
+			case "report-incident":
+				return (
+					<ReportIncident
+						setIsLoggedIn={setIsLoggedIn}
+						setUserRole={setUserRole}
+						navigate={navigate}
+						onIncidentCreated={handleIncidentCreated}
+					/>
+				);
+			case "payments":
+				return (
+					<MyPayments
+						setIsLoggedIn={setIsLoggedIn}
+						setUserRole={setUserRole}
+						formatDate={formatDate}
+						navigate={navigate}
+					/>
+				);
+			default:
+				return null;
+		}
 	};
 
 	return (
-		<div className='min-h-screen bg-gray-100'>
-			{/* Navbar */}
-			<nav className='bg-white shadow-md'>
-				<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
-					<div className='flex justify-between h-16'>
-						<div className='flex'>
-							{/* Logo/Brand */}
-							<div className='flex-shrink-0 flex items-center'>
-								<span className='text-xl font-bold text-blue-600'>DayCare</span>
-							</div>
-
-							{/* Navigation Links */}
-							<div className='hidden sm:ml-6 sm:flex sm:space-x-8'>
-								<Link
-									to='/babysitter/schedules'
-									className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-										isActive("/babysitter/schedules")
-											? "border-blue-500 text-gray-900"
-											: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-									}`}>
-									<FaCalendar className='mr-2' />
-									My Schedules
-								</Link>
-								<Link
-									to='/babysitter/incidents'
-									className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-										isActive("/babysitter/incidents")
-											? "border-blue-500 text-gray-900"
-											: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-									}`}>
-									<FaExclamationTriangle className='mr-2' />
-									Reported Incidents
-								</Link>
-								<Link
-									to='/babysitter/report-incident'
-									className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-										isActive("/babysitter/report-incident")
-											? "border-blue-500 text-gray-900"
-											: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-									}`}>
-									<FaPlus className='mr-2' />
-									Report Incident
-								</Link>
-								<Link
-									to='/babysitter/payments'
-									className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-										isActive("/babysitter/payments")
-											? "border-blue-500 text-gray-900"
-											: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-									}`}>
-									<FaMoneyBillWave className='mr-2' />
-									My Payments
-								</Link>
-							</div>
+		<div className='min-h-screen bg-gradient-to-br from-pink-50 to-purple-50 pt-20'>
+			<nav className='bg-white/80 backdrop-blur-md shadow-lg sticky top-0 z-10 p-4 border-b border-pink-100'>
+				<div className='max-w-[1400px] mx-auto flex flex-col sm:flex-row justify-between items-center'>
+					<div className='flex items-center space-x-4 mb-4 sm:mb-0'>
+						<div className='w-12 h-12 rounded-full bg-gradient-to-br from-pink-200 to-purple-200 flex items-center justify-center'>
+							<span className='text-xl font-bold text-pink-600'>
+								{loadingName ? "..." : babysitterName.charAt(0)}
+							</span>
 						</div>
-
-						{/* Right side - Welcome message and Logout */}
-						<div className='flex items-center space-x-4'>
-							<div className='flex items-center text-gray-700'>
-								<FaUser className='mr-2' />
-								<span>Welcome, {currentUser?.name || "Babysitter"}</span>
-							</div>
-							<button
-								onClick={handleLogout}
-								className='inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500'>
-								<FaSignOutAlt className='mr-2' />
-								Logout
-							</button>
-						</div>
+						<h2 className='text-lg font-semibold text-gray-800'>
+							{loadingName ? "Loading..." : `Welcome, ${babysitterName}`}
+						</h2>
+					</div>
+					<div className='flex flex-wrap items-center space-x-4'>
+						<button
+							onClick={() => setActiveSection("schedules")}
+							className={`font-medium transition-all duration-200 relative pb-2 ${
+								activeSection === "schedules"
+									? "text-pink-500 font-semibold after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-1 after:bg-pink-500 after:rounded-full"
+									: "text-gray-600 hover:text-pink-500"
+							}`}>
+							My Schedule
+						</button>
+						<button
+							onClick={() => setActiveSection("incidents")}
+							className={`font-medium transition-all duration-200 relative pb-2 ${
+								activeSection === "incidents"
+									? "text-pink-500 font-semibold after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-1 after:bg-pink-500 after:rounded-full"
+									: "text-gray-600 hover:text-pink-500"
+							}`}>
+							My Incidents
+						</button>
+						<button
+							onClick={() => setActiveSection("report-incident")}
+							className={`font-medium transition-all duration-200 relative pb-2 ${
+								activeSection === "report-incident"
+									? "text-pink-500 font-semibold after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-1 after:bg-pink-500 after:rounded-full"
+									: "text-gray-600 hover:text-pink-500"
+							}`}>
+							Report Incident
+						</button>
+						<button
+							onClick={() => setActiveSection("payments")}
+							className={`font-medium transition-all duration-200 relative pb-2 ${
+								activeSection === "payments"
+									? "text-pink-500 font-semibold after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-1 after:bg-pink-500 after:rounded-full"
+									: "text-gray-600 hover:text-pink-500"
+							}`}>
+							My Payments
+						</button>
+						<button
+							onClick={handleLogout}
+							className='flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg hover:from-pink-600 hover:to-purple-600 transition-all duration-200 shadow-md hover:shadow-lg'>
+							<FaSignOutAlt />
+							<span>Logout</span>
+						</button>
 					</div>
 				</div>
 			</nav>
 
-			{/* Main Content */}
-			<main className='max-w-7xl mx-auto py-6 sm:px-6 lg:px-8'>
-				{/* Content will be rendered here based on the current route */}
-			</main>
+			<div className='p-6 max-w-[1400px] mx-auto'>
+				<div className='bg-white/80 backdrop-blur-md rounded-2xl shadow-lg p-8 mb-8'>
+					<h1 className='text-3xl font-bold text-gray-800 mb-2'>
+						Babysitter Dashboard
+					</h1>
+					<p className='text-gray-600'>
+						Manage your schedules, report incidents, and track your payments
+					</p>
+				</div>
+				<div className='bg-white/80 backdrop-blur-md rounded-2xl shadow-lg p-8'>
+					{renderSection()}
+				</div>
+			</div>
 		</div>
 	);
 };
 
-export default BabySitterDashboard;
+export default BabysitterDashboard;
