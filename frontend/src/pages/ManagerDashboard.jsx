@@ -1,5 +1,5 @@
-import { React, useEffect } from "react";
-import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
+import React from "react";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import {
@@ -16,14 +16,6 @@ import { CgDanger } from "react-icons/cg";
 
 const ManagerDashboard = ({ setIsLoggedIn, setUserRole }) => {
 	const navigate = useNavigate();
-	const location = useLocation();
-
-	// Redirect to finances page on initial load
-	useEffect(() => {
-		if (location.pathname === "/manager/dashboard") {
-			navigate("/manager/dashboard/finances");
-		}
-	}, [location.pathname, navigate]);
 
 	const handleLogout = async () => {
 		try {
@@ -107,6 +99,12 @@ const ManagerDashboard = ({ setIsLoggedIn, setUserRole }) => {
 						className='flex items-center p-3 hover:bg-gray-400 rounded-md transition-all duration-200 hover:translate-x-1 hover:shadow-md group'>
 						<FaMoneyBillWave className='mr-3 text-lg group-hover:text-yellow-600 transition-colors' />
 						<span className='group-hover:font-medium'>Expenses</span>
+					</Link>
+					<Link
+						to='/manager/dashboard/finances'
+						className='flex items-center p-3 hover:bg-gray-400 rounded-md transition-all duration-200 hover:translate-x-1 hover:shadow-md group'>
+						<FaChartLine className='mr-3 text-lg group-hover:text-purple-600 transition-colors' />
+						<span className='group-hover:font-medium'>Finances</span>
 					</Link>
 				</nav>
 				<button
