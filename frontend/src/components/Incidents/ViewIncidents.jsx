@@ -197,83 +197,116 @@ const ViewIncidents = ({ setIsLoggedIn, setUserRole }) => {
 					<p className='text-gray-600 text-lg'>No incidents found.</p>
 				</div>
 			) : (
-				<div className='space-y-6'>
-					{incidents.map((incident) => (
-						<div
-							key={incident.id}
-							className='bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1'>
-							<div className='p-6 flex flex-col md:flex-row md:items-start md:justify-between gap-6'>
-								<div className='flex items-start space-x-4 flex-1'>
-									<div className='bg-red-100 p-3 rounded-full'>
-										<FaExclamationTriangle className='text-red-500 text-xl' />
-									</div>
-									<div className='flex-1'>
-										<div className='flex items-center justify-between mb-4'>
-											<h3 className='text-xl font-semibold text-gray-800'>
-												Incident Details
-											</h3>
-											<span
-												className={`px-3 py-1 rounded-full text-sm font-medium ${
-													incident.status === "resolved"
-														? "bg-green-100 text-green-800"
-														: "bg-yellow-100 text-yellow-800"
-												}`}>
-												{incident.status}
-											</span>
-										</div>
-										<div className='grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-600'>
-											<div className='space-y-2'>
-												<p className='flex items-center'>
+				<div className='bg-white rounded-xl shadow-md overflow-hidden w-full'>
+					<div className='overflow-x-auto max-w-full'>
+						<table className='w-full divide-y divide-gray-200 table-auto'>
+							<thead className='bg-gray-50'>
+								<tr>
+									<th className='px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48'>
+										Date
+									</th>
+									<th className='px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48'>
+										Babysitter
+									</th>
+									<th className='px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48'>
+										Child
+									</th>
+									<th className='px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48'>
+										Type
+									</th>
+									<th className='px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48'>
+										Description
+									</th>
+									<th className='px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48'>
+										Status
+									</th>
+									<th className='px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24'>
+										Actions
+									</th>
+								</tr>
+							</thead>
+							<tbody className='bg-white divide-y divide-gray-200'>
+								{incidents.map((incident) => (
+									<tr key={incident.id} className='hover:bg-gray-50'>
+										<td className='px-4 py-4 whitespace-nowrap'>
+											<div className='flex items-center'>
+												<div className='flex-shrink-0 h-10 w-10'>
+													<div className='bg-red-100 p-2 rounded-full'>
+														<FaExclamationTriangle className='text-red-500 text-xl' />
+													</div>
+												</div>
+												<div className='ml-4'>
+													<div className='text-sm font-medium text-gray-900'>
+														{formatDate(incident.incident_date)}
+													</div>
+												</div>
+											</div>
+										</td>
+										<td className='px-4 py-4'>
+											<div className='text-sm text-gray-900'>
+												<div className='flex items-center'>
 													<FaUser className='mr-2 text-gray-500' />
-													<span className='font-medium'>Babysitter:</span>{" "}
 													{incident.babysitter_name}
-												</p>
-												<p className='flex items-center'>
+												</div>
+											</div>
+										</td>
+										<td className='px-4 py-4'>
+											<div className='text-sm text-gray-900'>
+												<div className='flex items-center'>
 													<FaChild className='mr-2 text-gray-500' />
-													<span className='font-medium'>Child:</span>{" "}
 													{incident.child_name}
-												</p>
-												<p>
-													<span className='font-medium'>Date:</span>{" "}
-													{formatDate(incident.incident_date)}
-												</p>
+												</div>
 											</div>
-											<div className='space-y-2'>
-												<p>
-													<span className='font-medium'>Type:</span>{" "}
-													{incident.incident_type}
-												</p>
-												<p>
-													<span className='font-medium'>Description:</span>{" "}
-													{incident.description}
-												</p>
+										</td>
+										<td className='px-4 py-4 whitespace-nowrap'>
+											<div className='text-sm text-gray-900'>
+												{incident.incident_type}
 											</div>
-										</div>
-									</div>
-								</div>
-								<div className='flex md:flex-col space-x-2 md:space-x-0 md:space-y-2'>
-									<button
-										onClick={() => handleOpenEdit(incident.id)}
-										className='p-2 text-gray-600 hover:text-yellow-500 transition-all duration-200 hover:scale-110 focus:outline-none'
-										title='Update Status'>
-										<FaEdit className='text-lg' />
-									</button>
-									<button
-										onClick={() => handleOpenEmailDialog(incident.id)}
-										className='p-2 text-gray-600 hover:text-blue-500 transition-all duration-200 hover:scale-110 focus:outline-none'
-										title='Send Email'>
-										<FaPaperPlane className='text-lg' />
-									</button>
-									<button
-										onClick={() => handleOpenDeleteDialog(incident.id)}
-										className='p-2 text-gray-600 hover:text-red-500 transition-all duration-200 hover:scale-110 focus:outline-none'
-										title='Delete Incident'>
-										<FaTrash className='text-lg' />
-									</button>
-								</div>
-							</div>
-						</div>
-					))}
+										</td>
+										<td className='px-4 py-4'>
+											<div className='text-sm text-gray-900'>
+												{incident.description}
+											</div>
+										</td>
+										<td className='px-4 py-4 whitespace-nowrap'>
+											<div className='text-sm text-gray-900'>
+												<span
+													className={`px-3 py-1 rounded-full text-sm font-medium ${
+														incident.status === "resolved"
+															? "bg-green-100 text-green-800"
+															: "bg-yellow-100 text-yellow-800"
+													}`}>
+													{incident.status}
+												</span>
+											</div>
+										</td>
+										<td className='px-4 py-4 whitespace-nowrap text-right text-sm font-medium'>
+											<div className='flex space-x-2'>
+												<button
+													onClick={() => handleOpenEdit(incident.id)}
+													className='text-blue-600 hover:text-blue-900'
+													title='Update Status'>
+													<FaEdit className='text-xl' />
+												</button>
+												<button
+													onClick={() => handleOpenEmailDialog(incident.id)}
+													className='text-green-600 hover:text-green-900'
+													title='Send Email'>
+													<FaPaperPlane className='text-xl' />
+												</button>
+												<button
+													onClick={() => handleOpenDeleteDialog(incident.id)}
+													className='text-red-600 hover:text-red-900'
+													title='Delete Incident'>
+													<FaTrash className='text-xl' />
+												</button>
+											</div>
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
 				</div>
 			)}
 
@@ -366,4 +399,3 @@ const ViewIncidents = ({ setIsLoggedIn, setUserRole }) => {
 };
 
 export default ViewIncidents;
-

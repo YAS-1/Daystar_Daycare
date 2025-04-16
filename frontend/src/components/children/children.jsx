@@ -17,6 +17,7 @@ const Children = ({ setIsLoggedIn, setUserRole }) => {
 	const [loading, setLoading] = useState(true);
 	const [editChild, setEditChild] = useState(null);
 	const [showDeleteDialog, setShowDeleteDialog] = useState(null);
+	const [searchQuery, setSearchQuery] = useState("");
 	const [formData, setFormData] = useState({
 		full_name: "",
 		age: "",
@@ -185,6 +186,11 @@ const Children = ({ setIsLoggedIn, setUserRole }) => {
 		});
 	};
 
+	// Filter children based on search query
+	const filteredChildren = children.filter((child) =>
+		child.full_name.toLowerCase().includes(searchQuery.toLowerCase())
+	);
+
 	if (loading) {
 		return (
 			<div className='flex justify-center items-center min-h-[60vh]'>
@@ -199,84 +205,147 @@ const Children = ({ setIsLoggedIn, setUserRole }) => {
 				Children Management
 			</h2>
 
-			{children.length === 0 ? (
-				<div className='text-center py-12 bg-white rounded-lg shadow-md'>
-					<FaUser className='mx-auto text-4xl text-gray-400 mb-4' />
-					<p className='text-gray-600 text-lg'>No children found.</p>
+			{/* Search Bar */}
+			<div className='mb-8 bg-white p-6 rounded-xl shadow-md'>
+				<div className='flex flex-col sm:flex-row gap-4'>
+					<div className='flex-1'>
+						<label
+							htmlFor='searchQuery'
+							className='block text-sm font-medium text-gray-700 mb-2'>
+							Search Child by Name
+						</label>
+						<div className='flex gap-2'>
+							<input
+								type='text'
+								id='searchQuery'
+								value={searchQuery}
+								onChange={(e) => setSearchQuery(e.target.value)}
+								placeholder='Enter child name'
+								className='flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200'
+							/>
+							<button
+								type='button'
+								onClick={() => setSearchQuery("")}
+								className='px-6 py-3 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50'>
+								Clear
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			{/* Children List */}
+			{filteredChildren.length === 0 ? (
+				<div className='text-center py-12 bg-white rounded-xl shadow-md'>
+					<FaChild className='mx-auto text-4xl text-gray-400 mb-4' />
+					<p className='text-gray-600 text-lg'>
+						{searchQuery
+							? "No children found matching your search"
+							: "No children found."}
+					</p>
 				</div>
 			) : (
-				<div className='space-y-4'>
-					{children.map((child) => (
-						<div
-							key={child.id}
-							className='bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-x-1'>
-							<div className='p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-6'>
-								<div className='flex items-center space-x-4'>
-									<div className='bg-gray-100 p-3 rounded-full'>
-										<FaChild className='text-black text-xl' />
-									</div>
-									<div>
-										<h3 className='text-xl font-semibold text-gray-800 mb-1'>
-											{child.full_name}
-										</h3>
-										<div className='flex items-center space-x-4 text-gray-600'>
-											<span>Age: {child.age}</span>
-											<span>{child.gender}</span>
-										</div>
-									</div>
-								</div>
-
-								<div className='flex-1 grid grid-cols-1 md:grid-cols-2 gap-4'>
-									<div className='space-y-2'>
-										<div className='flex items-center space-x-2 text-gray-600'>
-											<FaUserFriends className='text-black' />
-											<span>Parent/Guardian: {child.parent_guardian_name}</span>
-										</div>
-										<div className='flex items-center space-x-2 text-gray-600'>
-											<FaEnvelope className='text-black' />
-											<span>{child.parent_guardian_email}</span>
-										</div>
-										<div className='flex items-center space-x-2 text-gray-600'>
-											<FaPhone className='text-black' />
-											<span>{child.parent_guardian_phone}</span>
-										</div>
-									</div>
-
-									<div className='space-y-2'>
-										<div className='flex items-center space-x-2 text-gray-600'>
-											<FaUserFriends className='text-black' />
-											<span>
-												Relationship: {child.parent_guardian_relationship}
-											</span>
-										</div>
-										<div className='text-gray-600'>
-											<span>
-												Special Needs: {child.special_needs || "None"}
-											</span>
-										</div>
-										<div className='text-gray-600'>
-											<span>Duration of Stay: {child.Duration_of_stay}</span>
-										</div>
-									</div>
-								</div>
-
-								<div className='flex md:flex-col space-x-2 md:space-x-0 md:space-y-2'>
-									<button
-										onClick={() => handleEdit(child)}
-										className='p-2 text-gray-600 hover:text-yellow-500 transition-all duration-200 hover:scale-110 focus:outline-none'
-										title='Edit Child'>
-										<FaEdit className='text-lg' />
-									</button>
-									<button
-										onClick={() => handleOpenDeleteDialog(child.id)}
-										className='p-2 text-gray-600 hover:text-red-500 transition-all duration-200 hover:scale-110 focus:outline-none'
-										title='Delete Child'>
-										<FaTrash className='text-lg' />
-									</button>
-								</div>
-							</div>
-						</div>
-					))}
+				<div className='bg-white rounded-xl shadow-md overflow-hidden w-full'>
+					<div className='overflow-x-auto max-w-full'>
+						<table className='w-full divide-y divide-gray-200 table-auto'>
+							<thead className='bg-gray-50'>
+								<tr>
+									<th className='px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48'>
+										Name
+									</th>
+									<th className='px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24'>
+										Age
+									</th>
+									<th className='px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24'>
+										Gender
+									</th>
+									<th className='px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48'>
+										Parent/Guardian
+									</th>
+									<th className='px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48'>
+										Contact
+									</th>
+									<th className='px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48'>
+										Special Needs
+									</th>
+									<th className='px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48'>
+										Duration
+									</th>
+									<th className='px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24'>
+										Actions
+									</th>
+								</tr>
+							</thead>
+							<tbody className='bg-white divide-y divide-gray-200'>
+								{filteredChildren.map((child) => (
+									<tr key={child.id} className='hover:bg-gray-50'>
+										<td className='px-4 py-4 whitespace-nowrap'>
+											<div className='flex items-center'>
+												<div className='flex-shrink-0 h-10 w-10'>
+													<div className='bg-gray-100 p-2 rounded-full'>
+														<FaChild className='text-black text-xl' />
+													</div>
+												</div>
+												<div className='ml-4'>
+													<div className='text-sm font-medium text-gray-900'>
+														{child.full_name}
+													</div>
+												</div>
+											</div>
+										</td>
+										<td className='px-4 py-4 whitespace-nowrap'>
+											<div className='text-sm text-gray-900'>{child.age}</div>
+										</td>
+										<td className='px-4 py-4 whitespace-nowrap'>
+											<div className='text-sm text-gray-900'>
+												{child.gender}
+											</div>
+										</td>
+										<td className='px-4 py-4'>
+											<div className='text-sm text-gray-900'>
+												<div>{child.parent_guardian_name}</div>
+												<div className='text-sm text-gray-500'>
+													{child.parent_guardian_relationship}
+												</div>
+											</div>
+										</td>
+										<td className='px-4 py-4'>
+											<div className='text-sm text-gray-900'>
+												<div>{child.parent_guardian_phone}</div>
+												<div className='text-sm text-gray-500'>
+													{child.parent_guardian_email}
+												</div>
+											</div>
+										</td>
+										<td className='px-4 py-4 whitespace-nowrap'>
+											<div className='text-sm text-gray-900'>
+												{child.special_needs || "None"}
+											</div>
+										</td>
+										<td className='px-4 py-4 whitespace-nowrap'>
+											<div className='text-sm text-gray-900'>
+												{child.Duration_of_stay}
+											</div>
+										</td>
+										<td className='px-4 py-4 whitespace-nowrap text-right text-sm font-medium'>
+											<div className='flex space-x-2'>
+												<button
+													onClick={() => handleEdit(child)}
+													className='text-blue-600 hover:text-blue-900'>
+													<FaEdit className='text-xl' />
+												</button>
+												<button
+													onClick={() => handleOpenDeleteDialog(child.id)}
+													className='text-red-600 hover:text-red-900'>
+													<FaTrash className='text-xl' />
+												</button>
+											</div>
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
 				</div>
 			)}
 
@@ -367,7 +436,7 @@ const Children = ({ setIsLoggedIn, setUserRole }) => {
 										Parent/Guardian Phone
 									</label>
 									<input
-										type='text'
+										type='tel'
 										name='parent_guardian_phone'
 										value={formData.parent_guardian_phone}
 										onChange={handleChange}
@@ -468,4 +537,3 @@ const Children = ({ setIsLoggedIn, setUserRole }) => {
 };
 
 export default Children;
-

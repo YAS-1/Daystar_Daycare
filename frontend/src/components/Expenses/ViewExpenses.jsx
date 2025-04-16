@@ -180,67 +180,98 @@ const ViewExpenses = ({ setIsLoggedIn, setUserRole }) => {
 	}
 
 	return (
-		<div>
+		<div className='p-6 max-w-[1400px] mx-auto'>
+			<h2 className='text-3xl font-bold mb-8 text-gray-800 border-b-2 border-gray-200 pb-4'>
+				Expenses Management
+			</h2>
+
+			{/* Expenses List */}
 			{expenses.length === 0 ? (
-				<div className='text-center py-12 bg-white rounded-lg shadow-md'>
+				<div className='text-center py-12 bg-white rounded-xl shadow-md'>
 					<FaMoneyBillWave className='mx-auto text-4xl text-gray-400 mb-4' />
 					<p className='text-gray-600 text-lg'>No expenses found.</p>
 				</div>
 			) : (
-				<div className='space-y-4'>
-					{expenses.map((expense) => (
-						<div
-							key={expense.id}
-							className='bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-x-1'>
-							<div className='p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-6'>
-								<div className='flex items-center space-x-4'>
-									<div className='bg-gray-100 p-3 rounded-full'>
-										<FaMoneyBillWave className='text-black text-xl' />
-									</div>
-									<div>
-										<h3 className='text-xl font-semibold text-gray-800 mb-2'>
-											Expense Details
-										</h3>
-										<div className='text-gray-600 space-y-1'>
-											<p className='flex items-center'>
-												<FaList className='mr-2 text-gray-500' />
-												<strong>Category</strong>: {expense.category || "N/A"}
-											</p>
-											<p>
-												<strong>Amount</strong>: Shs
-												{(Number(expense.amount) || 0).toFixed(0)}
-											</p>
-											<p className='flex items-center'>
-												<FaCalendar className='mr-2 text-gray-500' />
-												<strong>Date</strong>:{" "}
-												{formatDate(expense.expense_date)}
-											</p>
-											<p>
-												<strong>Description</strong>:{" "}
+				<div className='bg-white rounded-xl shadow-md overflow-hidden w-full'>
+					<div className='overflow-x-auto max-w-full'>
+						<table className='w-full divide-y divide-gray-200 table-auto'>
+							<thead className='bg-gray-50'>
+								<tr>
+									<th className='px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48'>
+										Category
+									</th>
+									<th className='px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48'>
+										Amount
+									</th>
+									<th className='px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48'>
+										Date
+									</th>
+									<th className='px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48'>
+										Description
+									</th>
+									<th className='px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48'>
+										Created
+									</th>
+									<th className='px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24'>
+										Actions
+									</th>
+								</tr>
+							</thead>
+							<tbody className='bg-white divide-y divide-gray-200'>
+								{expenses.map((expense) => (
+									<tr key={expense.id} className='hover:bg-gray-50'>
+										<td className='px-4 py-4'>
+											<div className='text-sm text-gray-900'>
+												<div className='flex items-center'>
+													<FaList className='mr-2 text-gray-500' />
+													{expense.category || "N/A"}
+												</div>
+											</div>
+										</td>
+										<td className='px-4 py-4 whitespace-nowrap'>
+											<div className='text-sm text-gray-900'>
+												Shs {(Number(expense.amount) || 0).toFixed(0)}
+											</div>
+										</td>
+										<td className='px-4 py-4 whitespace-nowrap'>
+											<div className='text-sm text-gray-900'>
+												<div className='flex items-center'>
+													<FaCalendar className='mr-2 text-gray-500' />
+													{formatDate(expense.expense_date)}
+												</div>
+											</div>
+										</td>
+										<td className='px-4 py-4'>
+											<div className='text-sm text-gray-900'>
 												{expense.description || "N/A"}
-											</p>
-											<p>
-												<strong>Created</strong>:{" "}
+											</div>
+										</td>
+										<td className='px-4 py-4 whitespace-nowrap'>
+											<div className='text-sm text-gray-900'>
 												{formatDate(expense.created_at)}
-											</p>
-										</div>
-									</div>
-								</div>
-								<div className='flex md:flex-col space-x-2 md:space-x-0 md:space-y-2'>
-									<FaEdit
-										onClick={() => handleOpenEdit(expense)}
-										className='p-2 text-gray-600 hover:text-yellow-500 transition-all duration-200 hover:scale-110 focus:outline-none text-4xl'
-										title='Update Expense'
-									/>
-									<FaTrash
-										onClick={() => handleOpenDeleteDialog(expense.id)}
-										className='p-2 text-gray-600 hover:text-red-500 transition-all duration-200 hover:scale-110 focus:outline-none text-4xl'
-										title='Delete Expense'
-									/>
-								</div>
-							</div>
-						</div>
-					))}
+											</div>
+										</td>
+										<td className='px-4 py-4 whitespace-nowrap text-right text-sm font-medium'>
+											<div className='flex space-x-2'>
+												<button
+													onClick={() => handleOpenEdit(expense)}
+													className='text-blue-600 hover:text-blue-900'
+													title='Update Expense'>
+													<FaEdit className='text-xl' />
+												</button>
+												<button
+													onClick={() => handleOpenDeleteDialog(expense.id)}
+													className='text-red-600 hover:text-red-900'
+													title='Delete Expense'>
+													<FaTrash className='text-xl' />
+												</button>
+											</div>
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
 				</div>
 			)}
 
@@ -299,7 +330,7 @@ const ViewExpenses = ({ setIsLoggedIn, setUserRole }) => {
 							</div>
 							<div>
 								<label className='block text-sm font-medium text-gray-700 mb-2'>
-									Amount ($)
+									Amount (Shs)
 								</label>
 								<input
 									type='number'
@@ -357,4 +388,3 @@ const ViewExpenses = ({ setIsLoggedIn, setUserRole }) => {
 };
 
 export default ViewExpenses;
-
