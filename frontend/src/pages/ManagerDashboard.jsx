@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
+import React from "react";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import {
@@ -16,14 +16,6 @@ import { CgDanger } from "react-icons/cg";
 
 const ManagerDashboard = ({ setIsLoggedIn, setUserRole }) => {
 	const navigate = useNavigate();
-	const location = useLocation();
-
-	// Redirect to finances page on initial load
-	useEffect(() => {
-		if (location.pathname === "/manager/dashboard") {
-			navigate("/manager/dashboard/finances");
-		}
-	}, [location.pathname, navigate]);
 
 	const handleLogout = async () => {
 		try {
@@ -117,7 +109,6 @@ const ManagerDashboard = ({ setIsLoggedIn, setUserRole }) => {
 				</button>
 			</div>
 			<div className='flex-1 p-6'>
-				{/* The Outlet is used to render the child routes within the child route */}
 				<Outlet />
 				{!Outlet && (
 					<p className='text-gray-600'>Select an option from the sidebar.</p>
