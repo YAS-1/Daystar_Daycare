@@ -182,88 +182,124 @@ const ViewPayments = ({ setIsLoggedIn, setUserRole }) => {
 	}
 
 	return (
-		<div>
+		<div className='p-6 max-w-[1400px] mx-auto'>
+			<h2 className='text-3xl font-bold mb-8 text-gray-800 border-b-2 border-gray-200 pb-4'>
+				Payments Management - This Stores the Parent Payments
+			</h2>
+
+			{/* Payments List */}
 			{payments.length === 0 ? (
-				<div className='text-center py-12 bg-white rounded-lg shadow-md'>
+				<div className='text-center py-12 bg-white rounded-xl shadow-md'>
 					<FaCreditCard className='mx-auto text-4xl text-gray-400 mb-4' />
 					<p className='text-gray-600 text-lg'>No payments found.</p>
 				</div>
 			) : (
-				<div className='space-y-4'>
-					{payments.map((payment) => (
-						<div
-							key={payment.id}
-							className='bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-x-1'>
-							<div className='p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-6'>
-								<div className='flex items-center space-x-4'>
-									<div className='bg-gray-100 p-3 rounded-full'>
-										<FaCreditCard className='text-black text-xl' />
-									</div>
-									<div>
-										<h3 className='text-xl font-semibold text-gray-800 mb-2'>
-											Payment Details
-										</h3>
-										<div className='text-gray-600 space-y-1'>
-											<p className='flex items-center'>
-												<FaUser className='mr-2 text-gray-500' />
-												<strong>Child:</strong> {payment.child_name || "N/A"}
-											</p>
-											<p className='flex items-center'>
-												<FaCalendar className='mr-2 text-gray-500' />
-												<strong>Ssession Date:</strong>{" "}
-												{formatDate(payment.schedule_date)}
-											</p>
-											<p>
-												<strong>Amount:</strong> Shs{" "}
-												{(Number(payment.amount) || 0).toFixed(0)}
-											</p>
-											<p>
-												<strong>Payment Date:</strong>{" "}
+				<div className='bg-white rounded-xl shadow-md overflow-hidden w-full'>
+					<div className='overflow-x-auto max-w-full'>
+						<table className='w-full divide-y divide-gray-200 table-auto'>
+							<thead className='bg-gray-50'>
+								<tr>
+									<th className='px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48'>
+										Child
+									</th>
+									<th className='px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48'>
+										Session Date
+									</th>
+									<th className='px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48'>
+										Amount
+									</th>
+									<th className='px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48'>
+										Payment Date
+									</th>
+									<th className='px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48'>
+										Session Type
+									</th>
+									<th className='px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48'>
+										Status
+									</th>
+									<th className='px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24'>
+										Actions
+									</th>
+								</tr>
+							</thead>
+							<tbody className='bg-white divide-y divide-gray-200'>
+								{payments.map((payment) => (
+									<tr key={payment.id} className='hover:bg-gray-50'>
+										<td className='px-4 py-4'>
+											<div className='text-sm text-gray-900'>
+												<div className='flex items-center'>
+													<FaUser className='mr-2 text-gray-500' />
+													{payment.child_name || "N/A"}
+												</div>
+											</div>
+										</td>
+										<td className='px-4 py-4 whitespace-nowrap'>
+											<div className='text-sm text-gray-900'>
+												<div className='flex items-center'>
+													<FaCalendar className='mr-2 text-gray-500' />
+													{formatDate(payment.schedule_date)}
+												</div>
+											</div>
+										</td>
+										<td className='px-4 py-4 whitespace-nowrap'>
+											<div className='text-sm text-gray-900'>
+												Shs {(Number(payment.amount) || 0).toFixed(0)}
+											</div>
+										</td>
+										<td className='px-4 py-4 whitespace-nowrap'>
+											<div className='text-sm text-gray-900'>
 												{formatDate(payment.payment_date)}
-											</p>
-											<p>
-												<strong>Session Type:</strong>{" "}
+											</div>
+										</td>
+										<td className='px-4 py-4 whitespace-nowrap'>
+											<div className='text-sm text-gray-900'>
 												{payment.session_type || "N/A"}
-											</p>
-											<p>
-												<strong>Status:</strong>{" "}
+											</div>
+										</td>
+										<td className='px-4 py-4 whitespace-nowrap'>
+											<div className='text-sm text-gray-900'>
 												<span
-													className={
+													className={`px-3 py-1 rounded-full text-sm font-medium ${
 														payment.status === "paid"
-															? "text-green-600"
+															? "bg-green-100 text-green-800"
 															: payment.status === "pending"
-															? "text-yellow-600"
-															: "text-red-600"
-													}>
+															? "bg-yellow-100 text-yellow-800"
+															: "bg-red-100 text-red-800"
+													}`}>
 													{payment.status || "N/A"}
 												</span>
-											</p>
-										</div>
-									</div>
-								</div>
-								<div className='flex md:flex-col space-x-2 md:space-x-0 md:space-y-2'>
-									<FaEdit
-										onClick={() => handleOpenEdit(payment.id)}
-										className='p-2 text-gray-600 hover:text-yellow-500 transition-all duration-200 hover:scale-110 focus:outline-none text-4xl'
-										title='Update Status'
-									/>
-									{(payment.status === "pending" ||
-										payment.status === "overdue") && (
-										<FaEnvelope
-											onClick={() => handleOpenReminderDialog(payment.id)}
-											className='p-2 text-gray-600 hover:text-blue-500 transition-all duration-200 hover:scale-110 focus:outline-none text-4xl'
-											title='Send Reminder'
-										/>
-									)}
-									<FaTrash
-										onClick={() => handleOpenDeleteDialog(payment.id)}
-										className='p-2 text-gray-600 hover:text-red-500 transition-all duration-200 hover:scale-110 focus:outline-none text-4xl'
-										title='Delete Payment'
-									/>
-								</div>
-							</div>
-						</div>
-					))}
+											</div>
+										</td>
+										<td className='px-4 py-4 whitespace-nowrap text-right text-sm font-medium'>
+											<div className='flex space-x-2'>
+												<button
+													onClick={() => handleOpenEdit(payment.id)}
+													className='text-blue-600 hover:text-blue-900'
+													title='Update Status'>
+													<FaEdit className='text-xl' />
+												</button>
+												{(payment.status === "pending" ||
+													payment.status === "overdue") && (
+													<button
+														onClick={() => handleOpenReminderDialog(payment.id)}
+														className='text-green-600 hover:text-green-900'
+														title='Send Reminder'>
+														<FaEnvelope className='text-xl' />
+													</button>
+												)}
+												<button
+													onClick={() => handleOpenDeleteDialog(payment.id)}
+													className='text-red-600 hover:text-red-900'
+													title='Delete Payment'>
+													<FaTrash className='text-xl' />
+												</button>
+											</div>
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
 				</div>
 			)}
 

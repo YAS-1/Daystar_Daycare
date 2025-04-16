@@ -47,10 +47,22 @@ const ReportIncident = ({
 		}
 
 		try {
+			// Get the child's ID based on the name
+			const childResponse = await axios.get(
+				`http://localhost:3337/api/babysitter/child/name/${incidentForm.child_name}`,
+				{ withCredentials: true }
+			);
+			const child_id = childResponse.data.data.id;
+
 			const config = { withCredentials: true };
 			await axios.post(
 				"http://localhost:3337/api/babysitter/createIncident",
-				incidentForm,
+				{
+					child_id,
+					incident_type: incidentForm.incident_type,
+					description: incidentForm.description,
+					incident_date: incidentForm.incident_date,
+				},
 				config
 			);
 			toast.success("Incident reported successfully", {
@@ -130,9 +142,9 @@ const ReportIncident = ({
 									className='w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200'
 									required>
 									<option value=''>Select Type</option>
-									<option value='accident'>Accident</option>
+									<option value='health'>Health</option>
 									<option value='behavior'>Behavior</option>
-									<option value='illness'>Illness</option>
+									<option value='safety'>Safety</option>
 									<option value='other'>Other</option>
 								</select>
 							</div>
