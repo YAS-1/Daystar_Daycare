@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
 import ManagerLogin from "./pages/ManagerLogin";
 import BabySitterLogin from "./pages/BabySitterLogin";
-import ManagerDashboard from "./pages/ManagerDashBoard";
+import ManagerDashboard from "./pages/ManagerDashboard";
 import Babysitters from "./components/BabySitters/Babysitters";
 import RegisterBabysitter from "./components/BabySitters/RegisterBabysitter";
 import Children from "./components/children/children";
@@ -12,7 +12,7 @@ import Incidents from "./components/Incidents/Incidents";
 import Payments from "./components/Payments/Payments";
 import Expenses from "./components/Expenses/Expenses";
 import Finances from "./components/Finances/Finances";
-import BabySitterDashboard from "./pages/BabySitterDashboard";
+import BabySitterDashboard from "./pages/BabySitterDashBoard";
 
 
 function App() {

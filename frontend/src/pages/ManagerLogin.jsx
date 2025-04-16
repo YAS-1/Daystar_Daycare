@@ -34,10 +34,10 @@ const ManagerLogin = ({ setIsLoggedIn, setUserRole }) => {
             console.log("Login response:", response.data);
 
             if (response.data.success) {
-                setIsLoggedIn(true);
-                setUserRole("manager");
-                navigate("/manager/dashboard");
-                toast.success("Welcome, Manager!", { position: "top-right" });
+				setIsLoggedIn(true);
+				setUserRole("manager");
+				navigate("/manager/dashboard");
+				toast.success("Welcome, Manager!", { position: "top-right" });
             } else {
                 throw new Error(response.data.message || "Login failed");
             }
