@@ -29,7 +29,7 @@ const PORT = process.env.WEB_PORT || 3337;
 
 // CORS configuration
 const corsOptions = {
-    origin: ['http://localhost:5173', 'http://localhost:3000'], // Frontend URL
+    origin: ['http://localhost:5173', 'http://localhost:5174'], // Frontend URL
     credentials: true, // Allow credentials (cookies, authorization headers, etc.)
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
@@ -52,7 +52,7 @@ app.use("/api/babysitter", babysitterOperationsRouter);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
-    console.log(`CORS enabled for frontend at http://localhost:5173/`);
+    console.log(`CORS enabled for frontend at http://localhost:5173 or http://localhost:5174`);
 
     createBabySittersTable();
     createManagerTable();
