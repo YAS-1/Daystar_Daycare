@@ -12,7 +12,7 @@ import Incidents from "./components/Incidents/Incidents";
 import Payments from "./components/Payments/Payments";
 import Expenses from "./components/Expenses/Expenses";
 import Finances from "./components/Finances/Finances";
-import BabySitterDashboard from "./pages/BabySitterDashboard";
+import BabySitterDashboard from "./pages/BabySitterDashBoard";
 
 
 function App() {
