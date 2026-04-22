@@ -47,6 +47,12 @@ const ManagerDashboard = ({ setIsLoggedIn, setUserRole }) => {
 				</h2>
 				<nav className='space-y-2 flex-1'>
 					<Link
+						to='/manager/dashboard/finances'
+						className='flex items-center p-3 hover:bg-gray-400 rounded-md transition-all duration-200 hover:translate-x-1 hover:shadow-md group'>
+						<FaChartLine className='mr-3 text-lg group-hover:text-purple-600 transition-colors' />
+						<span className='group-hover:font-medium'>Finances</span>
+					</Link>					
+					<Link
 						to='/manager/dashboard/babysitters'
 						className='flex items-center p-3 hover:bg-gray-400 rounded-md transition-all duration-200 hover:translate-x-1 hover:shadow-md group'>
 						<FaUser className='mr-3 text-lg group-hover:text-blue-600 transition-colors' />
@@ -93,12 +99,6 @@ const ManagerDashboard = ({ setIsLoggedIn, setUserRole }) => {
 						className='flex items-center p-3 hover:bg-gray-400 rounded-md transition-all duration-200 hover:translate-x-1 hover:shadow-md group'>
 						<FaMoneyBillWave className='mr-3 text-lg group-hover:text-yellow-600 transition-colors' />
 						<span className='group-hover:font-medium'>Expenses</span>
-					</Link>
-					<Link
-						to='/manager/dashboard/finances'
-						className='flex items-center p-3 hover:bg-gray-400 rounded-md transition-all duration-200 hover:translate-x-1 hover:shadow-md group'>
-						<FaChartLine className='mr-3 text-lg group-hover:text-purple-600 transition-colors' />
-						<span className='group-hover:font-medium'>Finances</span>
 					</Link>
 				</nav>
 				<button
