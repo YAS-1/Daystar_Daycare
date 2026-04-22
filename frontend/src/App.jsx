@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
 import ManagerLogin from "./pages/ManagerLogin";
 import BabySitterLogin from "./pages/BabySitterLogin";
-import ManagerDashboard from "./pages/ManagerDashboard";
+import ManagerDashboard from "./pages/ManagerDashBoard";
 import Babysitters from "./components/BabySitters/Babysitters";
 import RegisterBabysitter from "./components/BabySitters/RegisterBabysitter";
 import Children from "./components/children/children";
