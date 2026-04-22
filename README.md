@@ -97,3 +97,66 @@ DD/
 - **react-icons**: UI components
 - **tailwindcss**: Styling
 - **chart.js**: Data visualization
+
+## Environment Variables
+
+Create a `.env` file in the backend directory with the following variables:
+
+```env
+# Database Configuration
+DB_HOST=localhost
+DB_USER=your_database_user
+DB_PASSWORD=your_database_password
+DB_NAME=daystar_daycare
+
+# Server Configuration 
+PORT=3337 or any port of your choice
+
+# JWT Configuration
+JWT_SECRET=your_jwt_secret_key
+JWT_EXPIRES_IN=24h
+
+# Email Configuration (for notifications)
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_email_app_password
+
+# Frontend URL (for CORS)
+FRONTEND_URL=http://localhost:5173 or http://localhost:5174
+```
+
+### Environment Variables Description:
+
+- **Database Configuration**
+  - `DB_HOST`: Your MySQL database host
+  - `DB_USER`: Database username
+  - `DB_PASSWORD`: Database password
+  - `DB_NAME`: Database name
+
+- **Server Configuration**
+  - `PORT`: Backend server port (default: 3337)
+
+- **JWT Configuration**
+  - `JWT_SECRET`: Secret key for JWT token generation
+  - `JWT_EXPIRES_IN`: Token expiration time
+
+- **Email Configuration**
+  - `EMAIL_HOST`: SMTP server host
+  - `EMAIL_PORT`: SMTP server port
+  - `EMAIL_USER`: Email address for sending notifications
+  - `EMAIL_PASS`: Email app password (for Gmail, use App Password)
+
+- **Frontend Configuration**
+  - `FRONTEND_URL`: URL of the frontend application (for CORS)
+
+### Setting Up Email for Notifications
+
+1. Create a Gmail account or use an existing one
+2. Enable 2-step verification
+3. Generate an App Password:
+   - Go to Google Account settings
+   - Select 'Security'
+   - Under '2-Step Verification', select 'App passwords'
+   - Generate a new app password for 'Mail'
+4. Use this generated password as `EMAIL_PASS` in your .env file
